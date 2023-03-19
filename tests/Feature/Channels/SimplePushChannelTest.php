@@ -25,7 +25,12 @@ it('should send message using token from message', function () {
     (new SimplePushChannel($this->http))
         ->send($user, new SimplePushAlert('123456'));
 
-    expect($this->httpMockHandler->getLastRequest()->getUri()->getPath())->toBe('/send/123456/Test%20Alert/Test%20SimplePush%20Alert');
+    expect($this->httpMockHandler->getLastRequest()->getUri()->getPath())->toBe('/send');
+    expect(json_decode($this->httpMockHandler->getLastRequest()->getBody()->getContents(), true))->toBe([
+        'key'   => '123456',
+        'title' => 'Test Alert',
+        'msg'   => 'Test SimplePush Alert',
+    ]);
 });
 
 it('should throw an exception if missing or invalid token', function ($token) {

@@ -48,7 +48,7 @@ class SimplePushChannel
         $this->validateMessage($message);
 
         return $this->http
-            ->get($this->buildUrl($message));
+            ->post(self::API_BASE_URL, $this->buildData($message));
     }
 
     /**
@@ -86,16 +86,16 @@ class SimplePushChannel
      * Build url for the SimplePush notification.
      *
      * @param  SimplePushMessage  $message
-     * @return string
+     * @return array
      */
-    protected function buildUrl(SimplePushMessage $message): string
+    protected function buildData(SimplePushMessage $message): array
     {
-        return sprintf(
-            '%s/%s/%s/%s',
-            self::API_BASE_URL,
-            $message->token,
-            $message->title,
-            $message->content
-        );
+        return [
+            'json' => [
+                'key'   => $message->token,
+                'title' => $message->title,
+                'msg'   => $message->content,
+            ]
+        ];
     }
 }
