@@ -1,6 +1,6 @@
 {
-    "name": "barnsleyhq/laravel-simplepush-notifications-channel",
-    "description": "A SimplePush Laravel Notifications Channel",
+    "name": "barnsleyhq/laravel-simplepush-notification-channel",
+    "description": "A SimplePush Laravel Notification Channel",
     "type": "library",
     "license": "MIT",
     "authors": [
