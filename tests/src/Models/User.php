@@ -7,4 +7,9 @@ use Illuminate\Notifications\Notifiable;
 class User
 {
     use Notifiable;
+
+    public function getKey(): string
+    {
+        return 'id';
+    }
 }

@@ -3,6 +3,21 @@
 use BarnsleyHQ\SimplePush\Channels\SimplePushChannel;
 use BarnsleyHQ\SimplePush\Tests\Notifications\SimplePushAlert;
 use BarnsleyHQ\SimplePush\Tests\Models\User;
+use Illuminate\Support\Facades\Notification;
+
+it('should send message to notifiable', function () {
+    Notification::fake();
+
+    $user = new User();
+    $alert = new SimplePushAlert('123456');
+
+    $user->notify($alert);
+
+    Notification::assertSentTimes(SimplePushAlert::class, 1);
+    Notification::assertSentTo($user, SimplePushAlert::class, function ($notification) use ($alert) {
+        return $notification->token === $alert->token;
+    });
+});
 
 it('should send message using token from message', function () {
     $user = new User();
