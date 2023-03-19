@@ -78,10 +78,10 @@ The message content to be included in the notification.
 
 ```php
 $message = (new SimplePushMessage())
-    ->content('test-token');
+    ->content('This is a Test Alert');
 
 $message = new SimplePushMessage();
-$message->content('test-token');
+$message->content('This is a Test Alert');
 ```
 
 #### Optional
@@ -94,10 +94,24 @@ The title of the notification.
 
 ```php
 $message = (new SimplePushMessage())
-    ->title('test-token');
+    ->title('Test Alert');
 
 $message = new SimplePushMessage();
-$message->title('test-token');
+$message->title('Test Alert');
+```
+
+##### event(string): SimplePushMessage
+
+An event to trigger once the notification is sent.
+
+**Example:**
+
+```php
+$message = (new SimplePushMessage())
+    ->event('test-event');
+
+$message = new SimplePushMessage();
+$message->event('test-event');
 ```
 
 ## Testing
