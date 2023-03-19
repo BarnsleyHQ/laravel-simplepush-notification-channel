@@ -3,6 +3,7 @@
 namespace BarnsleyHQ\SimplePush\Channels;
 
 use BarnsleyHQ\SimplePush\Contracts\SimplePushNotification;
+use BarnsleyHQ\SimplePush\Exceptions\MissingDataException;
 use BarnsleyHQ\SimplePush\Messages\SimplePushMessage;
 use GuzzleHttp\Client as HttpClient;
 use Psr\Http\Message\ResponseInterface;
@@ -10,6 +11,12 @@ use Psr\Http\Message\ResponseInterface;
 class SimplePushChannel
 {
     const API_BASE_URL = 'https://api.simplepush.io/send';
+
+    const REQUIRED_DATA = [
+        'content',
+        'token' => '/^[a-zA-Z0-9]{6}$/',
+    ];
+
     /**
      * The HTTP client instance.
      *
@@ -38,12 +45,41 @@ class SimplePushChannel
     public function send($notifiable, SimplePushNotification $notification)
     {
         $message = $notification->toSimplePush($notifiable);
-        if (empty($message->token)) {
-            return null;
-        }
+        $this->validateMessage($message);
 
         return $this->http
             ->get($this->buildUrl($message));
+    }
+
+    /**
+     * Build url for the SimplePush notification.
+     *
+     * @param  SimplePushMessage  $message
+     * @return void
+     * @throws MissingDataException
+     */
+    protected function validateMessage(SimplePushMessage $message): void
+    {
+        $missingData = [];
+        foreach (self::REQUIRED_DATA as $fieldName => $expression) {
+            if (is_numeric($fieldName)) {
+                $fieldName = $expression;
+                $value = $message->{$fieldName};
+                if ($value === null || empty($value)) {
+                    $missingData[] = $fieldName;
+                }
+
+                continue;
+            }
+
+            if (! preg_match($expression, $message->{$fieldName})) {
+                $missingData[] = $fieldName;
+            }
+        }
+
+        if (! empty($missingData)) {
+            throw new MissingDataException($missingData);
+        }
     }
 
     /**

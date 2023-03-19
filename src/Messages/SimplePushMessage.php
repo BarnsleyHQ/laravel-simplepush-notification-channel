@@ -44,7 +44,7 @@ class SimplePushMessage
      * @param  string  $content
      * @return $this
      */
-    public function content($content)
+    public function content(string $content)
     {
         $this->content = $content;
 
@@ -57,7 +57,7 @@ class SimplePushMessage
      * @param  string  $title
      * @return $this
      */
-    public function title($title)
+    public function title(string $title)
     {
         $this->title = $title;
 

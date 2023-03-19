@@ -2,7 +2,6 @@
 
 namespace BarnsleyHQ\SimplePush\Tests\Notifications;
 
-use BarnsleyHQ\SimplePush\Channels\SimplePushChannel;
 use BarnsleyHQ\SimplePush\Contracts\SimplePushNotification;
 use BarnsleyHQ\SimplePush\Messages\SimplePushMessage;
 use Illuminate\Bus\Queueable;
@@ -13,7 +12,11 @@ class SimplePushAlert extends Notification implements ShouldQueue, SimplePushNot
 {
     use Queueable;
 
-    public function __construct(public string $token)
+    public function __construct(
+        public $token,
+        public $content = 'Test SimplePush Alert',
+        public $title = 'Test Alert',
+    )
     {
         //
     }
@@ -21,15 +24,13 @@ class SimplePushAlert extends Notification implements ShouldQueue, SimplePushNot
     public function via(): string
     {
         return 'simplepush';
-
-        // return SimplePushChannel::class;
     }
 
     public function toSimplePush($notifiable = null): SimplePushMessage
     {
         return (new SimplePushMessage)
             ->token($this->token)
-            ->title('Test Alert')
-            ->content('Test SimplePush Alert');
+            ->title($this->title)
+            ->content($this->content);
     }
 }
