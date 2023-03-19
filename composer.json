@@ -28,7 +28,9 @@
         "laravel/framework": "^10.4",
         "phpunit/phpunit": "^9.6",
         "nunomaduro/collision": "^6.1",
-        "pestphp/pest-plugin-laravel": "^1.4"
+        "pestphp/pest-plugin-laravel": "^1.4",
+        "phpstan/phpstan": "^1.10",
+        "orchestra/testbench": "^8.0"
     },
     "config": {
         "allow-plugins": {
@@ -36,6 +38,12 @@
         }
     },
     "scripts": {
+        "post-autoload-dump": [
+            "@php vendor/bin/testbench package:discover --ansi"
+        ],
+        "analyse": [
+            "vendor/bin/phpstan analyse -l 6 src tests"
+        ],
         "test": [
             "pest tests/"
         ],
