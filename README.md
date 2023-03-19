@@ -51,7 +51,53 @@ class CustomAlert
 }
 ```
 
-That should be everything you need to get up and running!
+### Available Methods (SimplePushMessage)
+
+#### Required
+
+##### token(string): SimplePushMessage
+
+The token to be used when sending the notification.
+
+**Example:**
+
+```php
+$message = (new SimplePushMessage())
+    ->token('test-token');
+
+$message = new SimplePushMessage();
+$message->token('test-token');
+```
+
+##### content(string): SimplePushMessage
+
+The message content to be included in the notification.
+
+**Example:**
+
+```php
+$message = (new SimplePushMessage())
+    ->content('test-token');
+
+$message = new SimplePushMessage();
+$message->content('test-token');
+```
+
+#### Optional
+
+##### title(string): SimplePushMessage
+
+The title of the notification.
+
+**Example:**
+
+```php
+$message = (new SimplePushMessage())
+    ->title('test-token');
+
+$message = new SimplePushMessage();
+$message->title('test-token');
+```
 
 ## Testing
 
