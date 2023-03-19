@@ -7,9 +7,9 @@ class SimplePushMessage
     /**
      * The token of the message.
      *
-     * @var string|null
+     * @var string
      */
-    public $token = null;
+    public $token;
 
     /**
      * The text content of the message.
