@@ -1,0 +1,46 @@
+{
+    "name": "barnsleyhq/laravel-simplepush-notifications-channel",
+    "description": "A SimplePush Laravel Notifications Channel",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alex Barnsley",
+            "email": "alex@barnsley.io"
+        }
+    ],
+    "require": {
+        "php": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "BarnsleyHQ\\SimplePush\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BarnsleyHQ\\SimplePush\\Tests\\": "tests/src"
+        }
+    },
+    "require-dev": {
+        "guzzlehttp/guzzle": "^7.5",
+        "pestphp/pest": "^1.22",
+        "laravel/framework": "^10.4",
+        "phpunit/phpunit": "^9.6",
+        "nunomaduro/collision": "^6.1",
+        "pestphp/pest-plugin-laravel": "^1.4"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "scripts": {
+        "test": [
+            "pest tests/"
+        ],
+        "test:coverage": [
+            "pest --coverage --min=100 --coverage-html=.coverage --coverage-clover=coverage.xml tests/"
+        ]
+    }
+}
