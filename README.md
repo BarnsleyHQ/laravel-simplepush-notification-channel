@@ -1,6 +1,7 @@
 # Laravel SimplePush Notification Channel
 
-[![codecov](https://codecov.io/gh/BarnsleyHQ/laravel-simplepush-notifications-channel/branch/main/graph/badge.svg?token=QDM2JgtrfN)](https://codecov.io/gh/BarnsleyHQ/laravel-simplepush-notifications-channel)
+[![Latest Stable Version](http://poser.pugx.org/barnsleyhq/laravel-simplepush-notification-channel/v)](https://packagist.org/packages/barnsleyhq/laravel-simplepush-notification-channel) [![PHP Version Require](http://poser.pugx.org/barnsleyhq/laravel-simplepush-notification-channel/require/php)](https://packagist.org/packages/barnsleyhq/laravel-simplepush-notification-channel) [![License](http://poser.pugx.org/barnsleyhq/laravel-simplepush-notification-channel/license)](https://packagist.org/packages/barnsleyhq/laravel-simplepush-notification-channel) [![codecov](https://codecov.io/gh/BarnsleyHQ/laravel-simplepush-notifications-channel/branch/main/graph/badge.svg?token=QDM2JgtrfN)](https://codecov.io/gh/BarnsleyHQ/laravel-simplepush-notifications-channel)
+
 
 This package gives you all the basic elements you need to send notifications to notifiable models via SimplePush.
 
