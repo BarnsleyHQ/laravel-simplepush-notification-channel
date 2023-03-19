@@ -26,6 +26,13 @@ class SimplePushMessage
     public $title;
 
     /**
+     * The event which the message will trigger.
+     *
+     * @var string
+     */
+    public $event;
+
+    /**
      * Set the token for the message.
      *
      * @param  string  $token
@@ -60,6 +67,19 @@ class SimplePushMessage
     public function title(string $title)
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Set the event which the message will trigger.
+     *
+     * @param  string  $title
+     * @return $this
+     */
+    public function event(string $event)
+    {
+        $this->event = $event;
 
         return $this;
     }

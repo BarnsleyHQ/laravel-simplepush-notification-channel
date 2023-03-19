@@ -95,6 +95,7 @@ class SimplePushChannel
                 'key'   => $message->token,
                 'title' => $message->title,
                 'msg'   => $message->content,
+                'event' => $message->event,
             ]
         ];
     }

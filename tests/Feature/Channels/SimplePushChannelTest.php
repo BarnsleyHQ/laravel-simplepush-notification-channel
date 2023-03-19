@@ -30,6 +30,7 @@ it('should send message using token from message', function () {
         'key'   => '123456',
         'title' => 'Test Alert',
         'msg'   => 'Test SimplePush Alert',
+        'event' => 'test-event',
     ]);
 });
 

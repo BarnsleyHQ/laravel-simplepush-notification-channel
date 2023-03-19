@@ -16,6 +16,7 @@ class SimplePushAlert extends Notification implements ShouldQueue, SimplePushNot
         public $token,
         public $content = 'Test SimplePush Alert',
         public $title = 'Test Alert',
+        public $event = 'test-event',
     )
     {
         //
@@ -31,6 +32,7 @@ class SimplePushAlert extends Notification implements ShouldQueue, SimplePushNot
         return (new SimplePushMessage)
             ->token($this->token)
             ->title($this->title)
-            ->content($this->content);
+            ->content($this->content)
+            ->event($this->event);
     }
 }
