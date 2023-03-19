@@ -2,8 +2,8 @@
 
 namespace BarnsleyHQ\SimplePush\Channels;
 
-use BarnsleyHQ\SimplePush\Contracts\SimplePushNotification;
 use BarnsleyHQ\SimplePush\Exceptions\MissingDataException;
+use BarnsleyHQ\SimplePush\Exceptions\MissingToSimplePushMethodException;
 use BarnsleyHQ\SimplePush\Messages\SimplePushMessage;
 use GuzzleHttp\Client as HttpClient;
 use Psr\Http\Message\ResponseInterface;
@@ -39,12 +39,18 @@ class SimplePushChannel
      * Send SimplePush notification
      *
      * @param mixed $notifiable
-     * @param SimplePushNotification $notification
+     * @param mixed $notification
      * @return ResponseInterface|null
+     * @throws MissingToSimplePushMethodException
      */
-    public function send($notifiable, SimplePushNotification $notification)
+    public function send($notifiable, $notification)
     {
+        if (! method_exists($notification, 'toSimplePush')) {
+            throw new MissingToSimplePushMethodException();
+        }
+
         $message = $notification->toSimplePush($notifiable);
+
         $this->validateMessage($message);
 
         return $this->http

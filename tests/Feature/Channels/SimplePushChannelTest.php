@@ -1,8 +1,10 @@
 <?php
 
 use BarnsleyHQ\SimplePush\Channels\SimplePushChannel;
+use BarnsleyHQ\SimplePush\Exceptions\MissingToSimplePushMethodException;
 use BarnsleyHQ\SimplePush\Tests\Notifications\SimplePushAlert;
 use BarnsleyHQ\SimplePush\Tests\Models\User;
+use BarnsleyHQ\SimplePush\Tests\Notifications\OtherAlert;
 use Illuminate\Support\Facades\Notification;
 
 it('should send message to notifiable', function () {
@@ -66,3 +68,10 @@ it('should throw an exception if missing both token and content', function ($tok
     ['1234', ''],
     ['1234$', ''],
 ]);
+
+it('should throw an exception if notification cannot send to simplepush', function () {
+    $user = new User();
+    $instance = (new SimplePushChannel($this->http));
+
+    expect(fn () => $instance->send($user, new OtherAlert('123456', '')))->toThrow(MissingToSimplePushMethodException::class);
+});

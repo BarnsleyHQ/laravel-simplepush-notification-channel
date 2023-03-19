@@ -2,12 +2,12 @@
 
 namespace BarnsleyHQ\SimplePush\Tests\Notifications;
 
-use BarnsleyHQ\SimplePush\Messages\SimplePushMessage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Mail\Mailable;
 
-class SimplePushAlert extends Notification implements ShouldQueue
+class OtherAlert extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -22,15 +22,11 @@ class SimplePushAlert extends Notification implements ShouldQueue
 
     public function via(): string
     {
-        return 'simplepush';
+        return 'mail';
     }
 
-    public function toSimplePush($notifiable = null): SimplePushMessage
+    public function toMail()
     {
-        return (new SimplePushMessage)
-            ->token($this->token)
-            ->title($this->title)
-            ->content($this->content)
-            ->event($this->event);
+        return new Mailable();
     }
 }
