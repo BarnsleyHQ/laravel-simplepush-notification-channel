@@ -4,7 +4,6 @@ namespace BarnsleyHQ\SimplePush\Channels;
 
 use BarnsleyHQ\SimplePush\Exceptions\MissingToSimplePushMethodException;
 use GuzzleHttp\Client as HttpClient;
-use Psr\Http\Message\ResponseInterface;
 
 class SimplePushChannel
 {
@@ -31,7 +30,7 @@ class SimplePushChannel
      *
      * @param mixed $notifiable
      * @param mixed $notification
-     * @return ResponseInterface|null
+     * @return array|null
      * @throws MissingToSimplePushMethodException
      */
     public function send($notifiable, $notification)

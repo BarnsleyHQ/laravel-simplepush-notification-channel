@@ -35,7 +35,7 @@ abstract class TestCase extends Base
         Http::preventStrayRequests();
 
         $this->httpMockHandler = new MockHandler([
-            new Response(200, [], 'Hello, World'),
+            new Response(200, [], '{"message": "Hello, World"}'),
         ]);
 
         $handlerStack = HandlerStack::create($this->httpMockHandler);

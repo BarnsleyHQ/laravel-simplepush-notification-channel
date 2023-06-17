@@ -52,6 +52,8 @@ class CustomAlert
 }
 ```
 
+## API
+
 ### Available Methods (SimplePushMessage)
 
 #### Required
@@ -161,6 +163,16 @@ Create new instance of FeedbackActions with an initial action.
 ```php
 $actions = FeedbackActions::make('Action 1');
 $actions = FeedbackActions::make('Action 1', fn ($feedbackId) => saveFeedbackId($feedbackId));
+```
+
+##### getFeedbackResponseForId(string $feedbackId, ?\GuzzleHttp\Client $httpClient): array|null
+
+Check message for feedback response.
+
+**Example:**
+
+```php
+FeedbackActions::getFeedbackResponseForId('5e885b1d33c547bbac78bda8cdaf7be7');
 ```
 
 ##### add(string|array $action): FeedbackActions

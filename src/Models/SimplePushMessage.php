@@ -5,13 +5,12 @@ namespace BarnsleyHQ\SimplePush\Models;
 use BarnsleyHQ\SimplePush\Exceptions\MissingDataException;
 use BarnsleyHQ\SimplePush\Models\Actions\FeedbackActions;
 use BarnsleyHQ\SimplePush\Models\Actions\GetActions;
+use BarnsleyHQ\SimplePush\SimplePushClient;
 use GuzzleHttp\Client as HttpClient;
 use Psr\Http\Message\ResponseInterface;
 
 class SimplePushMessage
 {
-    const API_BASE_URL = 'https://api.simplepush.io/send';
-
     const REQUIRED_DATA = [
         'content',
         'token' => '/^[a-zA-Z0-9]{6}$/',
@@ -117,6 +116,11 @@ class SimplePushMessage
         return $this;
     }
 
+    /**
+     * Check if message has a feedback actions callback.
+     *
+     * @return bool
+     */
     public function hasFeedbackActionsCallback(): bool
     {
         if (! $this->actions) {
@@ -163,22 +167,18 @@ class SimplePushMessage
     /**
      * Send SimplePush notification
      *
-     * @param HttpClient $http
-     * @return ResponseInterface
+     * @param null|HttpClient $http
+     * @return array|null
      */
-    public function send(null|HttpClient $httpClient = null): ResponseInterface
+    public function send(?HttpClient $httpClient = null): array|null
     {
         $this->validate();
 
-        if (! $httpClient) {
-            $httpClient = new HttpClient();
-        }
-
-        $response = $httpClient
-            ->post(self::API_BASE_URL, $this->toArray($this));
+        $response = SimplePushClient::withClient($httpClient)
+            ->post('/send', $this->toArray());
 
         if ($this->hasFeedbackActionsCallback()) {
-            call_user_func($this->actions->sendCallback, json_decode($response->getBody(), true)['feedbackId']);
+            call_user_func($this->actions->sendCallback, $response['feedbackId']);
         }
 
         return $response;

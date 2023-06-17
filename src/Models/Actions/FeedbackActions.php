@@ -2,6 +2,9 @@
 
 namespace BarnsleyHQ\SimplePush\Models\Actions;
 
+use BarnsleyHQ\SimplePush\SimplePushClient;
+use GuzzleHttp\Client as HttpClient;
+
 class FeedbackActions
 {
     /**
@@ -28,6 +31,25 @@ class FeedbackActions
     {
         return (new self())->add($action)
             ->sendCallback($sendCallback);
+    }
+
+    /**
+     * Create new instance with option(s).
+     *
+     * @param  string  $feedbackId
+     * @param  null|HttpClient  $httpClient
+     * @return array|null
+     */
+    public static function getFeedbackResponseForId(string $feedbackId, ?HttpClient $httpClient = null): array|null
+    {
+        $data = SimplePushClient::withClient($httpClient)
+            ->get('/1/feedback/'.$feedbackId);
+
+        if (! $data || $data['success'] === false) {
+            return null;
+        }
+
+        return $data;
     }
 
     /**

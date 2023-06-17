@@ -1,6 +1,10 @@
 <?php
 
 use BarnsleyHQ\SimplePush\Models\Actions\FeedbackActions;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 
 it('should create an instance', function () {
     $actions = new FeedbackActions();
@@ -56,4 +60,37 @@ it('should set send callback to existing instance', function () {
 
     $actions->sendCallback($method);
     expect($actions->sendCallback)->toBe($method);
+});
+
+it('should fetch feedback data', function () {
+    $httpMockHandler = new MockHandler([
+        new Response(200, [], '{"success":true,"action_selected":"yes","action_selected_at":1646869812,"action_delivered_at":1646869812}'),
+    ]);
+
+    $handlerStack = HandlerStack::create($httpMockHandler);
+
+    $client = new Client(['handler' => $handlerStack]);
+
+    $feedbackData = FeedbackActions::getFeedbackResponseForId('5e885b1d33c547bbac78bda8cdaf7be7', $client);
+
+    expect($feedbackData)->toBe([
+        'success'             => true,
+        'action_selected'     => 'yes',
+        'action_selected_at'  => 1646869812,
+        'action_delivered_at' => 1646869812
+    ]);
+});
+
+it('should return null if no feedback data', function () {
+    $httpMockHandler = new MockHandler([
+        new Response(200, [], '{"success":false}'),
+    ]);
+
+    $handlerStack = HandlerStack::create($httpMockHandler);
+
+    $client = new Client(['handler' => $handlerStack]);
+
+    $feedbackData = FeedbackActions::getFeedbackResponseForId('5e885b1d33c547bbac78bda8cdaf7be7', $client);
+
+    expect($feedbackData)->toBeNull();
 });
