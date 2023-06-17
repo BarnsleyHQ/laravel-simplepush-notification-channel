@@ -13,14 +13,14 @@ Install the package using composer:
 composer require barnsleyhq/laravel-simplepush-notifications-channel
 ```
 
-## Usage
+## Laravel Usage
 
 Once installed, all you need to do is setup your notifications to send to the SimplePush channel:
 
 ```php
 <?php
 
-use BarnsleyHQ\SimplePush\SimplePushMessage;
+use BarnsleyHQ\SimplePush\Models\SimplePushMessage;
 
 ...
 
@@ -323,6 +323,29 @@ $actions = new GetAction();
 $actions->setName('Action 1')
     ->setUrl('https://my-url.com/action')
     ->toArray();
+```
+
+## Base PHP Usage
+
+While this is built for Laravel, it's possible to use without.
+
+```php
+<?php
+
+use BarnsleyHQ\SimplePush\Models\GetAction;
+use BarnsleyHQ\SimplePush\Models\GetActions;
+use BarnsleyHQ\SimplePush\Models\SimplePushMessage;
+
+(new SimplePushMessage)
+    ->token('123456')
+    ->title('Custom Alert')
+    ->content('You have a new alert!')
+    ->event('Custom Event')
+    ->actions(GetActions::make([
+        GetAction::make('Pause for 1 hour', 'https://webhooks.my-url.com/pause?hours=1'),
+        GetAction::make('Pause for 24 hours', 'https://webhooks.my-url.com/pause?hours=24'),
+    ]))
+    ->send();
 ```
 
 ## Testing

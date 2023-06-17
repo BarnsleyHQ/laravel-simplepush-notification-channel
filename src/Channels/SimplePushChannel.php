@@ -2,21 +2,12 @@
 
 namespace BarnsleyHQ\SimplePush\Channels;
 
-use BarnsleyHQ\SimplePush\Exceptions\MissingDataException;
 use BarnsleyHQ\SimplePush\Exceptions\MissingToSimplePushMethodException;
-use BarnsleyHQ\SimplePush\Models\SimplePushMessage;
 use GuzzleHttp\Client as HttpClient;
 use Psr\Http\Message\ResponseInterface;
 
 class SimplePushChannel
 {
-    const API_BASE_URL = 'https://api.simplepush.io/send';
-
-    const REQUIRED_DATA = [
-        'content',
-        'token' => '/^[a-zA-Z0-9]{6}$/',
-    ];
-
     /**
      * The HTTP client instance.
      *
@@ -49,67 +40,7 @@ class SimplePushChannel
             throw new MissingToSimplePushMethodException();
         }
 
-        $message = $notification->toSimplePush($notifiable);
-
-        $this->validateMessage($message);
-
-        $response = $this->http
-            ->post(self::API_BASE_URL, $this->buildData($message));
-
-        if ($message->hasFeedbackActionsCallback()) {
-            call_user_func($message->actions->sendCallback, json_decode($response->getBody(), true)['feedbackId']);
-        }
-
-        return $response;
-    }
-
-    /**
-     * Build url for the SimplePush notification.
-     *
-     * @param  SimplePushMessage  $message
-     * @return void
-     * @throws MissingDataException
-     */
-    protected function validateMessage(SimplePushMessage $message): void
-    {
-        $missingData = [];
-        foreach (self::REQUIRED_DATA as $fieldName => $expression) {
-            if (is_numeric($fieldName)) {
-                $fieldName = $expression;
-                $value = $message->{$fieldName};
-                if ($value === null || empty($value)) {
-                    $missingData[] = $fieldName;
-                }
-
-                continue;
-            }
-
-            if (! preg_match($expression, $message->{$fieldName})) {
-                $missingData[] = $fieldName;
-            }
-        }
-
-        if (! empty($missingData)) {
-            throw new MissingDataException($missingData);
-        }
-    }
-
-    /**
-     * Build url for the SimplePush notification.
-     *
-     * @param  SimplePushMessage  $message
-     * @return array
-     */
-    protected function buildData(SimplePushMessage $message): array
-    {
-        return [
-            'json' => [
-                'key'     => $message->token,
-                'title'   => $message->title,
-                'msg'     => $message->content,
-                'event'   => $message->event,
-                'actions' => $message->actions ? $message->actions->toArray() : null,
-            ]
-        ];
+        return $notification->toSimplePush($notifiable)
+            ->send($this->http);
     }
 }
