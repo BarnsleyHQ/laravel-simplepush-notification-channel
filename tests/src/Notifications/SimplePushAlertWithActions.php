@@ -2,12 +2,13 @@
 
 namespace BarnsleyHQ\SimplePush\Tests\Notifications;
 
+use BarnsleyHQ\SimplePush\Models\Actions\FeedbackActions;
 use BarnsleyHQ\SimplePush\Models\SimplePushMessage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SimplePushAlert extends Notification implements ShouldQueue
+class SimplePushAlertWithActions extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -16,6 +17,7 @@ class SimplePushAlert extends Notification implements ShouldQueue
         public $content = 'Test SimplePush Alert',
         public $title = 'Test Alert',
         public $event = 'test-event',
+        public $actionsCallback = null,
     ) {
         //
     }
@@ -31,6 +33,7 @@ class SimplePushAlert extends Notification implements ShouldQueue
             ->token($this->token)
             ->title($this->title)
             ->content($this->content)
-            ->event($this->event);
+            ->event($this->event)
+            ->actions(FeedbackActions::make('Test Action', $this->actionsCallback));
     }
 }

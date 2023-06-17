@@ -114,6 +114,217 @@ $message = new SimplePushMessage();
 $message->event('test-event');
 ```
 
+##### actions(FeedbackActions|GetActions): SimplePushMessage
+
+Actions to be sent along with the event.
+
+**Feedback Actions Example:**
+
+```php
+$message = (new SimplePushMessage())
+    ->actions(FeedbackActions::make('Pause events for 1 hour'));
+
+$actions = FeedbackActions::make([
+    'Pause events for 1 hour',
+    'Pause events for 2 hours',
+]);
+$actions->add('Pause events for 3 hours');
+
+$message = new SimplePushMessage();
+$message->actions($actions);
+```
+
+**GET Actions Example:**
+
+```php
+$message = (new SimplePushMessage())
+    ->actions(GetActions::make(GetAction::make('Pause events for 1 hour', 'https://my-url.com/pause?hours=1')));
+
+$actions = GetActions::make([
+    GetAction::make('Pause events for 1 hour', 'https://my-url.com/pause?hours=1'),
+    GetAction::make('Pause events for 2 hours', 'https://my-url.com/pause?hours=2'),
+]);
+$actions->add(GetAction::make('Pause events for 3 hours', 'https://my-url.com/pause?hours=3'));
+
+$message = new SimplePushMessage();
+$message->actions($actions);
+```
+
+### Available Methods (FeedbackActions)
+
+##### make(string|array $action, null|callable $sendCallback = null): FeedbackActions
+
+Create new instance of FeedbackActions with an initial action.
+
+**Example:**
+
+```php
+$actions = FeedbackActions::make('Action 1');
+$actions = FeedbackActions::make('Action 1', fn ($feedbackId) => saveFeedbackId($feedbackId));
+```
+
+##### add(string|array $action): FeedbackActions
+
+Add another action to an existing instance of FeedbackActions.
+
+**Example:**
+
+```php
+$actions = FeedbackActions::make('Action 1')
+    ->add('Action 2');
+
+$actions = new FeedbackActions();
+$actions->add([
+    'Action 1',
+    'Action 2',
+]);
+```
+
+##### sendCallback(null|callable $sendCallback): FeedbackActions
+
+Update callback to retrieve Feedback ID for an existing instance of FeedbackActions.
+
+**Example:**
+
+```php
+$actions = FeedbackActions::make('Action 1')
+    ->sendCallback(fn ($feedbackId) => saveFeedbackId($feedbackId));
+
+$actions = new FeedbackActions();
+$actions->sendCallback(function ($feedbackId) {
+    $this->saveFeedbackId($feedbackId);
+});
+```
+
+##### toArray: array
+
+Return FeedbackAction options as an array.
+
+**Example:**
+
+```php
+$actions = FeedbackActions::make('Action 1')
+    ->toArray();
+
+$actions = new FeedbackActions();
+$actions->toArray();
+```
+
+### Available Methods (GetActions)
+
+##### make(GetAction $action): GetActions
+
+Create new instance of GetActions with an initial action.
+
+**Example:**
+
+```php
+$actions = GetActions::make(GetAction::make('Action 1', 'https://my-url.com/action'));
+```
+
+##### add(GetAction|array $action): GetActions
+
+Add another action to an existing instance of GetActions.
+
+**Example:**
+
+```php
+$actions = GetActions::make(GetAction::make('Action 1', 'https://my-url.com/action'))
+    ->add(GetAction::make('Action 2', 'https://my-url.com/action-2'));
+
+$actions = new GetActions();
+$actions->add([
+    GetAction::make('Action 1', 'https://my-url.com/action'),
+    GetAction::make('Action 2', 'https://my-url.com/action-2'),
+]);
+```
+
+##### addAction(string $name, string $url): GetActions
+
+Add another action, with just the required values, to an existing instance of GetActions.
+
+**Example:**
+
+```php
+$actions = GetActions::make()
+    ->addAction('Action 1', 'https://my-url.com/action');
+
+$actions->addAction('Action 1', 'https://my-url.com/action');
+```
+
+##### toArray: array
+
+Return GetActions options as an array.
+
+**Example:**
+
+```php
+$actions = GetActions::make(GetAction::make('Action 1', 'https://my-url.com/action'))
+    ->toArray();
+
+$actions = new GetActions();
+$actions->toArray();
+```
+
+### Available Methods (GetAction)
+
+##### make(string $name, string $url): GetAction
+
+Create new instance of GetAction with initial values.
+
+**Example:**
+
+```php
+$actions = GetAction::make('Action 1', 'https://my-url.com/action');
+```
+
+##### setName(string $name): GetAction
+
+Set the name of the action.
+
+**Example:**
+
+```php
+$actions = GetAction::make('Action 1', 'https://my-url.com/action')
+    ->setName('Renamed Action')
+    ->setUrl('https://my-url.com/renamed-action');
+
+$actions = new GetAction();
+$actions->setName('Action 1')
+    ->setUrl('https://my-url.com/action');
+```
+
+##### setUrl(string $url): GetAction
+
+Set the URL for the action.
+
+**Example:**
+
+```php
+$actions = GetAction::make()
+    ->addAction('Action 1', 'https://my-url.com/action');
+
+$actions->addAction('Action 1', 'https://my-url.com/action');
+```
+
+##### toArray: array
+
+Return GetAction options as an array.
+
+**Example:**
+
+```php
+$actions = GetAction::make('Action 1', 'https://my-url.com/action')
+    ->setName('Renamed Action')
+    ->setUrl('https://my-url.com/renamed-action')
+    ->toArray();
+
+$actions = new GetAction();
+$actions->setName('Action 1')
+    ->setUrl('https://my-url.com/action')
+    ->toArray();
+```
+
 ## Testing
 
 For basic testing, run:

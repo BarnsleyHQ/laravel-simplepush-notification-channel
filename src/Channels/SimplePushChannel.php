@@ -4,7 +4,7 @@ namespace BarnsleyHQ\SimplePush\Channels;
 
 use BarnsleyHQ\SimplePush\Exceptions\MissingDataException;
 use BarnsleyHQ\SimplePush\Exceptions\MissingToSimplePushMethodException;
-use BarnsleyHQ\SimplePush\Messages\SimplePushMessage;
+use BarnsleyHQ\SimplePush\Models\SimplePushMessage;
 use GuzzleHttp\Client as HttpClient;
 use Psr\Http\Message\ResponseInterface;
 
@@ -53,8 +53,14 @@ class SimplePushChannel
 
         $this->validateMessage($message);
 
-        return $this->http
+        $response = $this->http
             ->post(self::API_BASE_URL, $this->buildData($message));
+
+        if ($message->hasFeedbackActionsCallback()) {
+            call_user_func($message->actions->sendCallback, json_decode($response->getBody(), true)['feedbackId']);
+        }
+
+        return $response;
     }
 
     /**
@@ -98,10 +104,11 @@ class SimplePushChannel
     {
         return [
             'json' => [
-                'key'   => $message->token,
-                'title' => $message->title,
-                'msg'   => $message->content,
-                'event' => $message->event,
+                'key'     => $message->token,
+                'title'   => $message->title,
+                'msg'     => $message->content,
+                'event'   => $message->event,
+                'actions' => $message->actions ? $message->actions->toArray() : null,
             ]
         ];
     }
