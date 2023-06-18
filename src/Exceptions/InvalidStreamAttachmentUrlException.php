@@ -2,7 +2,7 @@
 
 namespace BarnsleyHQ\SimplePush\Exceptions;
 
-class InvalidGetActionUrl extends \Exception
+class InvalidStreamAttachmentUrlException extends \Exception
 {
     //
 }

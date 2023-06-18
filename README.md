@@ -20,6 +20,9 @@ Once installed, all you need to do is setup your notifications to send to the Si
 ```php
 <?php
 
+use BarnsleyHQ\SimplePush\Models\Actions\GetAction;
+use BarnsleyHQ\SimplePush\Models\Actions\GetActions;
+use BarnsleyHQ\SimplePush\Models\Attachments\VideoAttachment;
 use BarnsleyHQ\SimplePush\Models\SimplePushMessage;
 
 ...
@@ -44,7 +47,13 @@ class CustomAlert
         return (new SimplePushMessage)
             ->token($notifiable->tokens->simplepush) // Change this line to get the token
             ->title('Custom Alert')
-            ->content('You have a new alert!');
+            ->content('You have a new alert!')
+            ->event('Custom Event')
+            ->actions(GetActions::make([
+                GetAction::make('Pause for 1 hour', 'https://webhooks.test.com/pause?hours=1'),
+                GetAction::make('Pause for 24 hours', 'https://webhooks.test.com/pause?hours=24'),
+            ]))
+            ->attachments(VideoAttachment::make('https://my-url.com/thumbnail.png', 'https://my-url.com/video.mp4'));
     }
 
     ...
@@ -54,7 +63,7 @@ class CustomAlert
 
 ## API
 
-### Available Methods (SimplePushMessage)
+### BarnsleyHQ\SimplePush\Models\SimplePushMessage
 
 #### Required
 
@@ -152,7 +161,7 @@ $message = new SimplePushMessage();
 $message->actions($actions);
 ```
 
-### Available Methods (FeedbackActions)
+### BarnsleyHQ\SimplePush\Models\Actions\FeedbackActions
 
 ##### make(string|array $action, null|callable $sendCallback = null): FeedbackActions
 
@@ -222,7 +231,7 @@ $actions = new FeedbackActions();
 $actions->toArray();
 ```
 
-### Available Methods (GetActions)
+### BarnsleyHQ\SimplePush\Models\Actions\GetActions
 
 ##### make(GetAction $action): GetActions
 
@@ -278,7 +287,7 @@ $actions = new GetActions();
 $actions->toArray();
 ```
 
-### Available Methods (GetAction)
+### BarnsleyHQ\SimplePush\Models\Actions\GetAction
 
 ##### make(string $name, string $url): GetAction
 
@@ -334,6 +343,152 @@ $actions = GetAction::make('Action 1', 'https://my-url.com/action')
 $actions = new GetAction();
 $actions->setName('Action 1')
     ->setUrl('https://my-url.com/action')
+    ->toArray();
+```
+
+### BarnsleyHQ\SimplePush\Models\Attachments\GenericAttachments
+
+**Allowed Extensions**
+
+- jpg
+- png
+- gif
+- mp4
+
+##### make(string|array $attachment): GenericAttachments
+
+Create new instance of GenericAttachments with an initial attachment.
+
+**Example:**
+
+```php
+$attachments = GenericAttachments::make('https://test.com/image.png');
+```
+
+##### add(string|array $action): GenericAttachments
+
+Add another action to an existing instance of GenericAttachments.
+
+**Example:**
+
+```php
+$attachments = GenericAttachments::make('https://test.com/image.png')
+    ->add('https://test.com/video.mp4');
+
+$attachments = new GenericAttachments();
+$attachments->add([
+    'https://test.com/image.png',
+    'https://test.com/video.mp4',
+]);
+```
+
+##### toArray: array
+
+Return FeedbackAction options as an array.
+
+**Example:**
+
+```php
+$attachments = GenericAttachments::make('https://test.com/image.png')
+    ->toArray();
+
+$attachments = new GenericAttachments();
+$attachments->toArray();
+```
+
+### BarnsleyHQ\SimplePush\Models\Attachments\StreamAttachment
+
+##### make(string $streamUrl): StreamAttachment
+
+Create new instance of StreamAttachment with initial values.
+
+**Example:**
+
+```php
+$actions = StreamAttachment::make('rtsp://my-url.com/stream');
+```
+
+##### setStreamUrl(string $streamUrl): StreamAttachment
+
+Set the name of the action.
+
+**Example:**
+
+```php
+$actions = StreamAttachment::make('rtsp://my-url.com/stream')
+    ->setStreamUrl('rtsp://my-url.com/different-stream');
+
+$actions = new StreamAttachment();
+$actions->setStreamUrl('rtsp://my-url.com/stream');
+```
+
+##### toArray: array
+
+Return StreamAttachment options as an array.
+
+**Example:**
+
+```php
+$actions = StreamAttachment::make('rtsp://my-url.com/stream')
+    ->toArray();
+
+$actions = new StreamAttachment();
+$actions->setStreamUrl('https://my-url.com/action')
+    ->toArray();
+```
+
+### BarnsleyHQ\SimplePush\Models\Attachments\VideoAttachment
+
+##### make(string $thumbnailUrl, string $videoUrl): VideoAttachment
+
+Create new instance of VideoAttachment with initial values.
+
+**Example:**
+
+```php
+$actions = VideoAttachment::make('https://my-url.com/thumbnail.png', 'https://my-url.com/video.mp4');
+```
+
+##### setThumbnailUrl(string $thumbnailUrl): VideoAttachment
+
+Set the thumbnail URL of the attachment.
+
+**Example:**
+
+```php
+$actions = VideoAttachment::make('https://my-url.com/thumbnail.png', 'https://my-url.com/video.mp4')
+    ->setThumbnailUrl('https://my-url.com/different-thumbnail.jpg');
+
+$actions = new VideoAttachment();
+$actions->setThumbnailUrl('rtsp://my-url.com/stream');
+```
+
+##### setVideoUrl(string $videoUrl): VideoAttachment
+
+Set the video URL of the attachment.
+
+**Example:**
+
+```php
+$actions = VideoAttachment::make('https://my-url.com/thumbnail.png', 'https://my-url.com/video.mp4')
+    ->setVideoUrl('https://my-url.com/different-video.mp4');
+
+$actions = new VideoAttachment();
+$actions->setVideoUrl('https://my-url.com/video.mp4');
+```
+
+##### toArray: array
+
+Return VideoAttachment options as an array.
+
+**Example:**
+
+```php
+$actions = VideoAttachment::make('https://my-url.com/thumbnail.png', 'https://my-url.com/video.mp4')
+    ->toArray();
+
+$actions = new VideoAttachment();
+$actions->setVideoUrl('https://my-url.com/action')
     ->toArray();
 ```
 

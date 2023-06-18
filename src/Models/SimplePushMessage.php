@@ -5,6 +5,9 @@ namespace BarnsleyHQ\SimplePush\Models;
 use BarnsleyHQ\SimplePush\Exceptions\MissingDataException;
 use BarnsleyHQ\SimplePush\Models\Actions\FeedbackActions;
 use BarnsleyHQ\SimplePush\Models\Actions\GetActions;
+use BarnsleyHQ\SimplePush\Models\Attachments\GenericAttachments;
+use BarnsleyHQ\SimplePush\Models\Attachments\StreamAttachment;
+use BarnsleyHQ\SimplePush\Models\Attachments\VideoAttachment;
 use BarnsleyHQ\SimplePush\SimplePushClient;
 use GuzzleHttp\Client as HttpClient;
 use Psr\Http\Message\ResponseInterface;
@@ -50,6 +53,13 @@ class SimplePushMessage
      * @var null|FeedbackActions|GetActions
      */
     public $actions = null;
+
+    /**
+     * The attachments associated with the message.
+     *
+     * @var null|GenericAttachments|StreamAttachment|VideoAttachment
+     */
+    public $attachments = null;
 
     /**
      * Set the token for the message.
@@ -112,6 +122,19 @@ class SimplePushMessage
     public function actions(FeedbackActions|GetActions|null $actions)
     {
         $this->actions = $actions;
+
+        return $this;
+    }
+
+    /**
+     * Set the attachments for the message.
+     *
+     * @param  GenericAttachments|StreamAttachment|VideoAttachment|null  $attachments
+     * @return $this
+     */
+    public function attachments(GenericAttachments|StreamAttachment|VideoAttachment|null $attachments)
+    {
+        $this->attachments = $attachments;
 
         return $this;
     }
@@ -193,11 +216,12 @@ class SimplePushMessage
     {
         return [
             'json' => [
-                'key'     => $this->token,
-                'title'   => $this->title,
-                'msg'     => $this->content,
-                'event'   => $this->event,
-                'actions' => $this->actions ? $this->actions->toArray() : null,
+                'key'         => $this->token,
+                'title'       => $this->title,
+                'msg'         => $this->content,
+                'event'       => $this->event,
+                'actions'     => $this->actions ? $this->actions->toArray() : null,
+                'attachments' => $this->attachments ? $this->attachments->toArray() : null,
             ]
         ];
     }

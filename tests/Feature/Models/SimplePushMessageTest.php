@@ -3,6 +3,7 @@
 use BarnsleyHQ\SimplePush\Models\Actions\FeedbackActions;
 use BarnsleyHQ\SimplePush\Models\Actions\GetAction;
 use BarnsleyHQ\SimplePush\Models\Actions\GetActions;
+use BarnsleyHQ\SimplePush\Models\Attachments\GenericAttachments;
 use BarnsleyHQ\SimplePush\Models\SimplePushMessage;
 
 it('should create an instance', function () {
@@ -41,6 +42,20 @@ it('should set actions', function () {
 
     expect($message)->toBeInstanceOf(SimplePushMessage::class);
     expect($message->actions->toArray())->toBe(['Test Action']);
+});
+
+it('should set attachments', function () {
+    $message = (new SimplePushMessage())
+        ->attachments(GenericAttachments::make([
+            'https://test.com/image.png',
+            'https://test.com/video.mp4',
+        ]));
+
+    expect($message)->toBeInstanceOf(SimplePushMessage::class);
+    expect($message->attachments->toArray())->toBe([
+        'https://test.com/image.png',
+        'https://test.com/video.mp4',
+    ]);
 });
 
 it('should return false if message has no actions', function () {

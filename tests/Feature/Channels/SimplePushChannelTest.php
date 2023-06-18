@@ -2,10 +2,14 @@
 
 use BarnsleyHQ\SimplePush\Channels\SimplePushChannel;
 use BarnsleyHQ\SimplePush\Exceptions\MissingToSimplePushMethodException;
+use BarnsleyHQ\SimplePush\Models\Attachments\GenericAttachments;
+use BarnsleyHQ\SimplePush\Models\Attachments\StreamAttachment;
+use BarnsleyHQ\SimplePush\Models\Attachments\VideoAttachment;
 use BarnsleyHQ\SimplePush\Tests\Notifications\SimplePushAlert;
 use BarnsleyHQ\SimplePush\Tests\Models\User;
 use BarnsleyHQ\SimplePush\Tests\Notifications\OtherAlert;
 use BarnsleyHQ\SimplePush\Tests\Notifications\SimplePushAlertWithActions;
+use BarnsleyHQ\SimplePush\Tests\Notifications\SimplePushAlertWithAttachments;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -34,11 +38,12 @@ it('should send message using token from message', function () {
 
     expect($this->httpMockHandler->getLastRequest()->getUri()->getPath())->toBe('/send');
     expect(json_decode($this->httpMockHandler->getLastRequest()->getBody()->getContents(), true))->toBe([
-        'key'     => '123456',
-        'title'   => 'Test Alert',
-        'msg'     => 'Test SimplePush Alert',
-        'event'   => 'test-event',
-        'actions' => null,
+        'key'         => '123456',
+        'title'       => 'Test Alert',
+        'msg'         => 'Test SimplePush Alert',
+        'event'       => 'test-event',
+        'actions'     => null,
+        'attachments' => null,
     ]);
 });
 
@@ -50,11 +55,12 @@ it('should send message with actions', function () {
 
     expect($this->httpMockHandler->getLastRequest()->getUri()->getPath())->toBe('/send');
     expect(json_decode($this->httpMockHandler->getLastRequest()->getBody()->getContents(), true))->toBe([
-        'key'     => '123456',
-        'title'   => 'Test Alert',
-        'msg'     => 'Test SimplePush Alert',
-        'event'   => 'test-event',
-        'actions' => ['Test Action'],
+        'key'         => '123456',
+        'title'       => 'Test Alert',
+        'msg'         => 'Test SimplePush Alert',
+        'event'       => 'test-event',
+        'actions'     => ['Test Action'],
+        'attachments' => null,
     ]);
 });
 
@@ -83,6 +89,30 @@ it('should call feedback actions callback', function () {
 
     expect($alertFeedbackId)->toBe('test-feedback-id');
 });
+
+it('should send message with attachments', function ($attachments) {
+    $user = new User();
+
+    (new SimplePushChannel($this->http))
+        ->send($user, new SimplePushAlertWithAttachments(
+            token: '123456',
+            attachments: $attachments,
+        ));
+
+    expect($this->httpMockHandler->getLastRequest()->getUri()->getPath())->toBe('/send');
+    expect(json_decode($this->httpMockHandler->getLastRequest()->getBody()->getContents(), true))->toBe([
+        'key'         => '123456',
+        'title'       => 'Test Alert',
+        'msg'         => 'Test SimplePush Alert',
+        'event'       => 'test-event',
+        'actions'     => null,
+        'attachments' => $attachments->toArray(),
+    ]);
+})->with([
+    'generic' => GenericAttachments::make('https://test.com/image.png'),
+    'video'   => VideoAttachment::make('https://test.com/thumb.jpg', 'https://test.com/video.mp4'),
+    'stream'  => StreamAttachment::make('rtsp://test.com/stream'),
+]);
 
 it('should throw an exception if missing or invalid token', function ($token) {
     $user = new User();

@@ -1,6 +1,6 @@
 <?php
 
-use BarnsleyHQ\SimplePush\Exceptions\InvalidGetActionUrl;
+use BarnsleyHQ\SimplePush\Exceptions\InvalidGetActionUrlException;
 use BarnsleyHQ\SimplePush\Models\Actions\GetAction;
 
 it('should create an instance', function () {
@@ -18,16 +18,16 @@ it('should create action with data', function () {
 
 it('should throw exception if invalid url', function () {
     GetAction::make('Test Action', 'ftp://test.com');
-})->throws(InvalidGetActionUrl::class);
+})->throws(InvalidGetActionUrlException::class);
 
 it('should throw exception if invalid property is accessed', function () {
-    $action = GetAction::make('Test Action', 'http://test.com');
+    $action = new GetAction();
 
     expect($action->test)->toBe('Test Action');
 })->throws(\Exception::class);
 
 it('should throw exception if property does not exist when setting', function () {
-    $action = GetAction::make('Test Action', 'http://test.com');
+    $action = new GetAction();
 
     $action->test = true;
 })->throws(\Exception::class);
@@ -36,7 +36,7 @@ it('should validate url if set via property', function () {
     $action = new GetAction();
 
     $action->url = 'ftp://test.com';
-})->throws(InvalidGetActionUrl::class);
+})->throws(InvalidGetActionUrlException::class);
 
 it('should flatten action to array', function () {
     $action = GetAction::make('Test Action', 'https://test.com');
